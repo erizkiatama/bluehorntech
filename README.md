@@ -49,9 +49,9 @@ A comprehensive Mini EVV Logger designed for mobile workers to manage schedules,
    ```
 
 6. **Access the application:**
-   - **Frontend**: http://localhost:3000
-   - **Backend API**: http://localhost:8080
-   - **Health Check**: http://localhost:8080/health
+   - **Frontend**: http://localhost:3000 or http://127.0.0.1:3000
+   - **Backend API**: http://localhost:8080 or http://127.0.0.1:8080
+   - **Health Check**: http://localhost:8080/health or http://127.0.0.1:8080/health
 
 ### 🛑 Stop Services
 ```bash
