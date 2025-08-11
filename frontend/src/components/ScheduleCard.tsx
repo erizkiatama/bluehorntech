@@ -99,12 +99,12 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
   const statusConfig = getStatusConfig(schedule.status);
 
   const parseTimeRange = () => {
-    const formatTime = (date: Date) => {
+    const formatTime = (date: Date | string | undefined) => {
       if (!date) return '';
       
       try {
-        // Format to local time (24-hour format)
-        return date.toLocaleTimeString('en-US', {
+        const dateObj = typeof date === 'string' ? new Date(date) : date;
+        return dateObj.toLocaleTimeString('en-US', {
           hour: '2-digit',
           minute: '2-digit',
           hour12: false
