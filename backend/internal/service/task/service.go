@@ -66,7 +66,6 @@ func (s *service) UpdateTask(ctx context.Context, userID, taskID int64, req *mod
 		return nil, err
 	}
 
-	// 8. Return response
 	response := &models.TaskResponse{
 		ID:          taskID,
 		Status:      req.Status,

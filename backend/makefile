@@ -4,7 +4,7 @@ DB_PORT ?= 5432
 DB_USER ?= postgres
 DB_PASSWORD ?= password
 DB_NAME ?= bluehorntech
-DB_URL = postgres://$(DB_USER):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=disable
+DB_URL ?= postgres://$(DB_USER):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=disable
 
 # Migration path
 MIGRATION_PATH = ./migrations
