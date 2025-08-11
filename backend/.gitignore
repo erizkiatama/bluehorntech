@@ -1,0 +1,56 @@
+# Go binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+/bin/
+/bluehorntech
+/evv-logger
+/main
+/server
+
+# Go build artifacts
+*.o
+*.a
+
+# Go test and coverage
+*.test
+*.out
+
+# Go mod vendor (if using)
+vendor/
+
+# Air hot reload temp files
+tmp/
+.air_tmp/
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# Config overrides
+config.local.yaml
+config.override.yaml
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+postgres_data/
+
+# Logs
+*.log
+logs/
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker data
+go_cache/

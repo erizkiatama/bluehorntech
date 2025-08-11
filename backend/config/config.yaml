@@ -1,0 +1,16 @@
+server:
+  host: "0.0.0.0"
+  port: "8080"
+  env: "development"
+
+database:
+  url: "postgres://postgres:password@db:5432/bluehorntech?sslmode=disable"
+  maxOpenConnection: 25
+  maxIdleConnection: 10
+
+service:
+  maxDistanceError: 500.0        # 500 meters - block clock-in
+  maxDistanceWarning: 100.0      # 100 meters - allow with warning
+  maxEarlyClockInSeconds: 900
+  maxLateClockInSeconds: 1800 
+  minVisitDurationSeconds: 1800
