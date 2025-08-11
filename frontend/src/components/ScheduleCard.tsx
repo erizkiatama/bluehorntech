@@ -98,12 +98,29 @@ const ScheduleCard: React.FC<ScheduleCardProps> = ({
 
   const statusConfig = getStatusConfig(schedule.status);
 
-  const parseTimeRange = (timeRange: string) => {
-    const [start, end] = timeRange.split(' - ');
-    return { start: start || '', end: end || '' };
+  const parseTimeRange = () => {
+    const formatTime = (date: Date) => {
+      if (!date) return '';
+      
+      try {
+        // Format to local time (24-hour format)
+        return date.toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        });
+      } catch (error) {
+        return date.toString();
+      }
+    };
+    
+    return { 
+      start: formatTime(schedule.start_time), 
+      end: formatTime(schedule.end_time) 
+    };
   };
 
-  const { start: startTime, end: endTime } = parseTimeRange(schedule.shift_time);
+  const { start: startTime, end: endTime } = parseTimeRange();
 
   const handleClockIn = async () => {
     try {

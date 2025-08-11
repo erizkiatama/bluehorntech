@@ -1,5 +1,7 @@
 package models
 
+import "time"
+
 type ListScheduleResponse struct {
 	Stats     StatsResponse      `json:"stats,omitempty"`
 	Schedules []ScheduleResponse `json:"schedules"`
@@ -12,19 +14,20 @@ type StatsResponse struct {
 }
 
 type ScheduleResponse struct {
-	ID          int64  `json:"id"`
-	ClientName  string `json:"client_name"`
-	ServiceName string `json:"service_name"`
-	Location    string `json:"location"`
-	ShiftTime   string `json:"shift_time"`
-	ShiftDate   string `json:"shift_date"`
-	Status      string `json:"status"`
+	ID          int64     `json:"id"`
+	ClientName  string    `json:"client_name"`
+	ServiceName string    `json:"service_name"`
+	Location    string    `json:"location"`
+	StartTime   time.Time `json:"start_time"`
+	EndTime     time.Time `json:"end_time"`
+	ShiftDate   string    `json:"shift_date"`
+	Status      string    `json:"status"`
 
-	ServiceNotes     string `json:"service_notes,omitempty"`
-	ClockInTime      string `json:"clock_in_time,omitempty"`
-	ClockOutTime     string `json:"clock_out_time,omitempty"`
-	ClockInLocation  string `json:"clock_in_location,omitempty"`
-	ClockOutLocation string `json:"clock_out_location,omitempty"`
+	ServiceNotes     string    `json:"service_notes,omitempty"`
+	ClockInTime      time.Time `json:"clock_in_time,omitempty"`
+	ClockOutTime     time.Time `json:"clock_out_time,omitempty"`
+	ClockInLocation  string    `json:"clock_in_location,omitempty"`
+	ClockOutLocation string    `json:"clock_out_location,omitempty"`
 
 	Tasks []TaskResponse `json:"tasks,omitempty"`
 
@@ -36,13 +39,13 @@ type ScheduleResponse struct {
 }
 
 type TaskResponse struct {
-	ID          int64  `json:"id"`
-	ScheduleID  int64  `json:"schedule_id" `
-	Name        string `json:"name" `
-	Description string `json:"description,omitempty" `
-	Status      string `json:"status"`
-	Reason      string `json:"reason,omitempty"`
-	CompletedAt string `json:"completed_at,omitempty"`
+	ID          int64     `json:"id"`
+	ScheduleID  int64     `json:"schedule_id" `
+	Name        string    `json:"name" `
+	Description string    `json:"description,omitempty" `
+	Status      string    `json:"status"`
+	Reason      string    `json:"reason,omitempty"`
+	CompletedAt time.Time `json:"completed_at,omitempty"`
 }
 
 type APIResponse struct {

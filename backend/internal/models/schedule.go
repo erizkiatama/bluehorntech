@@ -2,9 +2,10 @@ package models
 
 import (
 	"database/sql"
+	"time"
+
 	"github.com/erizkiatama/bluehorntech/pkg/helpers"
 	"github.com/lib/pq"
-	"time"
 )
 
 type Schedule struct {
@@ -39,24 +40,15 @@ func (s *Schedule) ToScheduleResponse() ScheduleResponse {
 		ClientName:  s.ClientName,
 		ServiceName: s.ServiceName,
 		Location:    s.Location,
-		ShiftTime:   helpers.FormatShiftTime(s.StartTime, s.EndTime),
+		StartTime:   s.StartTime,
+		EndTime:     s.EndTime,
 		ShiftDate:   helpers.FormatShiftDate(s.StartTime),
 		Status:      s.Status,
 	}
 }
 
 func (s *Schedule) ToScheduleDetailResponse(tasks []Task) *ScheduleResponse {
-	var (
-		clockInTime, clockOutTime         string
-		clockInLocation, clockOutLocation string
-	)
-
-	if s.ClockInTime.Valid {
-		clockInTime = s.ClockInTime.Time.Format(time.TimeOnly)
-	}
-	if s.ClockOutTime.Valid {
-		clockOutTime = s.ClockOutTime.Time.Format(time.TimeOnly)
-	}
+	var clockInLocation, clockOutLocation string
 
 	if s.ClockInLatitude.Valid && s.ClockInLongitude.Valid {
 		clockInLocation = helpers.GetLocationDetail(s.ClockInLatitude.Float64, s.ClockInLongitude.Float64)
@@ -67,8 +59,8 @@ func (s *Schedule) ToScheduleDetailResponse(tasks []Task) *ScheduleResponse {
 
 	resp := s.ToScheduleResponse()
 	resp.ServiceNotes = s.ServiceNotes.String
-	resp.ClockInTime = clockInTime
-	resp.ClockOutTime = clockOutTime
+	resp.ClockInTime = s.ClockInTime.Time
+	resp.ClockOutTime = s.ClockOutTime.Time
 	resp.ClockInLocation = clockInLocation
 	resp.ClockOutLocation = clockOutLocation
 

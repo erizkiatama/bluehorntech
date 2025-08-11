@@ -58,12 +58,13 @@ export interface ScheduleResponse {
   client_name: string;
   service_name: string;
   location: string;
-  shift_time: string;
+  start_time: Date;
+  end_time: Date;
   shift_date: string;
   status: ScheduleStatus;
   service_notes?: string;
-  clock_in_time?: string;
-  clock_out_time?: string;
+  clock_in_time?: Date;
+  clock_out_time?: Date;
   clock_in_location?: string;
   clock_out_location?: string;
   tasks?: TaskResponse[];
@@ -78,7 +79,7 @@ export interface TaskResponse {
   description?: string;
   status: TaskStatus;
   reason?: string;
-  completed_at?: string;
+  completed_at?: Date;
 }
 
 export interface APIResponse<T = any> {

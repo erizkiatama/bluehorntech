@@ -3,10 +3,11 @@ package task
 import (
 	"context"
 	"database/sql"
+	"time"
+
 	"github.com/erizkiatama/bluehorntech/internal/models"
 	"github.com/erizkiatama/bluehorntech/internal/repository/schedule"
 	"github.com/erizkiatama/bluehorntech/internal/repository/task"
-	"time"
 )
 
 type Service interface {
@@ -49,12 +50,13 @@ func (s *service) UpdateTask(ctx context.Context, userID, taskID int64, req *mod
 
 	// Set completion time only for completed tasks
 	// set reason only for non completed tasks
-	if req.Status == models.TaskStatusCompleted {
+	switch req.Status {
+	case models.TaskStatusCompleted:
 		updateData.CompletedAt = sql.NullTime{
 			Time:  time.Now().UTC(),
 			Valid: true,
 		}
-	} else if req.Status == models.TaskStatusNotCompleted {
+	case models.TaskStatusNotCompleted:
 		updateData.Reason = sql.NullString{
 			String: req.Reason,
 			Valid:  true,
@@ -70,7 +72,7 @@ func (s *service) UpdateTask(ctx context.Context, userID, taskID int64, req *mod
 		ID:          taskID,
 		Status:      req.Status,
 		Reason:      req.Reason,
-		CompletedAt: updateData.CompletedAt.Time.Format(time.TimeOnly),
+		CompletedAt: updateData.CompletedAt.Time,
 	}
 
 	return response, nil

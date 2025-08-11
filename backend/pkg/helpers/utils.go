@@ -11,10 +11,6 @@ func GetLocationDetail(lat, long float64) string {
 	return fmt.Sprintf("Location details: %.2f - %.2f", lat, long)
 }
 
-func FormatShiftTime(start, end time.Time) string {
-	return start.Format("15:04") + " - " + end.Format("15:04")
-}
-
 func FormatShiftDate(start time.Time) string {
 	return start.Format("Mon, 02 Jan 2006")
 }

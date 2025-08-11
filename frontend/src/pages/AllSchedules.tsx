@@ -111,11 +111,8 @@ const AllSchedules: React.FC = () => {
           startIcon={<ArrowLeft size={20} />}
           sx={{ mr: 2, color: 'text.primary', textTransform: 'none' }}
         >
-          Back to Dashboard
-        </Button>
-        <Typography variant="h4" component="h1" sx={{ fontWeight: 700 }}>
           All Schedules
-        </Typography>
+        </Button>
       </Box>
 
       <Box sx={{ mb: 4 }}>

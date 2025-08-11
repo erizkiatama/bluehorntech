@@ -51,6 +51,21 @@ const ScheduleDetail: React.FC = () => {
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [editDisabled, setEditDisabled] = useState(false);
 
+  const formatTime = (date: Date | string | undefined) => {
+    if (!date) return '';
+    
+    try {
+      const dateObj = typeof date === 'string' ? new Date(date) : date;
+      return dateObj.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      });
+    } catch (error) {
+      return date.toString();
+    }
+  };
+
   useEffect(() => {
     if (id) {
       loadScheduleDetails(parseInt(id));
@@ -332,7 +347,7 @@ const ScheduleDetail: React.FC = () => {
             fontWeight: 600,
             fontSize: '0.875rem'
           }}>
-            🕒 Started at: {schedule.clock_in_time}
+            🕒 Started at: {formatTime(schedule.clock_in_time)}
           </Box>
         ) : (
           <Box sx={{ 
@@ -381,7 +396,9 @@ const ScheduleDetail: React.FC = () => {
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                 <Clock size={18} color='#111827' />
-                <Typography variant="body1" sx={{ color: '#111827', fontWeight: 600, fontSize: '1rem' }}>{schedule.shift_time}</Typography>
+                <Typography variant="body1" sx={{ color: '#111827', fontWeight: 600, fontSize: '1rem' }}>
+                  {formatTime(schedule.start_time)} - {formatTime(schedule.end_time)}
+                </Typography>
               </Box>
             </Box>
           )}
@@ -701,7 +718,7 @@ const ScheduleDetail: React.FC = () => {
             <Typography variant="h6" component="h3" fontWeight="600" color="#22c55e">Schedule Completed</Typography>
           </Box>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            This schedule was completed on {schedule.clock_out_time}.
+            This schedule was completed on {formatTime(schedule.clock_out_time)}.
           </Typography>
         </Box>
       )}

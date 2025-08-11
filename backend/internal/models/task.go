@@ -18,11 +18,6 @@ type Task struct {
 }
 
 func (t *Task) ToTaskResponse() TaskResponse {
-	completedAt := ""
-	if t.CompletedAt.Valid {
-		completedAt = t.CompletedAt.Time.Format(time.TimeOnly)
-	}
-
 	return TaskResponse{
 		ID:          t.ID,
 		ScheduleID:  t.ScheduleID,
@@ -30,7 +25,7 @@ func (t *Task) ToTaskResponse() TaskResponse {
 		Description: t.Description.String,
 		Status:      t.Status,
 		Reason:      t.Reason.String,
-		CompletedAt: completedAt,
+		CompletedAt: t.CompletedAt.Time,
 	}
 }
 
