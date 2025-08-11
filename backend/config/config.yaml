@@ -9,8 +9,8 @@ database:
   maxIdleConnection: 10
 
 service:
-  maxDistanceError: 500.0        # 500 meters - block clock-in
-  maxDistanceWarning: 100.0      # 100 meters - allow with warning
+  maxDistanceError: 10000.0       # 10 km - very permissive for development
+  maxDistanceWarning: 5000.0      # 5 km - warning threshold
   maxEarlyClockInSeconds: 900
   maxLateClockInSeconds: 1800 
   minVisitDurationSeconds: 1800
