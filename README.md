@@ -263,6 +263,12 @@ baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8080'
 3. **Error Handling**: User-friendly error messages for common issues
 4. **Coordinate Display**: Users can work with latitude/longitude coordinates without map visualization
 
+### Timezone Handling
+Currently using UTC for all datetime operations. In production, this would be enhanced to:
+- Store creator timezone with each schedule
+- Handle "today" queries in the appropriate local timezone
+- Support timezone-aware scheduling across regions
+
 ## 🚧 Development Commands
 
 ### Docker Compose (Recommended)
