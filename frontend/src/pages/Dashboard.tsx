@@ -12,6 +12,7 @@ import {
 import ScheduleCard from '../components/ScheduleCard';
 import { scheduleService } from '../services';
 import { ScheduleResponse, StatsResponse } from '../types';
+import { getCurrentTimezone } from '../utils/dateUtils';
 
 const Dashboard: React.FC = () => {
   const [schedules, setSchedules] = useState<ScheduleResponse[]>([]);
@@ -29,7 +30,8 @@ const Dashboard: React.FC = () => {
       setLoading(true);
       setError(null);
       
-      const todaySchedules = await scheduleService.getTodaySchedules();
+      const timezone = getCurrentTimezone();
+      const todaySchedules = await scheduleService.getTodaySchedules(timezone);
 
       setSchedules(todaySchedules.schedules || []);
       

@@ -4,17 +4,18 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"time"
+
 	"github.com/erizkiatama/bluehorntech/config"
 	"github.com/erizkiatama/bluehorntech/internal/models"
 	"github.com/erizkiatama/bluehorntech/internal/repository/schedule"
 	"github.com/erizkiatama/bluehorntech/internal/repository/task"
 	"github.com/erizkiatama/bluehorntech/pkg/helpers"
 	"github.com/lib/pq"
-	"time"
 )
 
 type Service interface {
-	GetTodaySchedules(ctx context.Context, userID int64) (*models.ListScheduleResponse, error)
+	GetTodaySchedules(ctx context.Context, userID int64, tz string) (*models.ListScheduleResponse, error)
 	GetAllSchedules(ctx context.Context, userID int64) (*models.ListScheduleResponse, error)
 	GetScheduleDetails(ctx context.Context, userID, scheduleID int64) (*models.ScheduleResponse, error)
 	ClockIn(ctx context.Context, userID, scheduleID int64, req *models.ClockInOutRequest) (*models.ClockInResponse, error)
@@ -31,8 +32,16 @@ func New(cfg config.ServiceConfig, scheduleRepo schedule.Repository, taskRepo ta
 	return &service{cfg: cfg, scheduleRepo: scheduleRepo, taskRepo: taskRepo}
 }
 
-func (s *service) GetTodaySchedules(ctx context.Context, userID int64) (*models.ListScheduleResponse, error) {
-	schedules, err := s.scheduleRepo.GetAll(ctx, userID, true)
+func (s *service) GetTodaySchedules(ctx context.Context, userID int64, tz string) (*models.ListScheduleResponse, error) {
+	loc, err := time.LoadLocation(tz)
+	if err != nil {
+		return nil, fmt.Errorf("invalid timezone: %w", err)
+	}
+	now := time.Now().In(loc)
+	startOfDay := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, loc)
+	endOfDay := startOfDay.Add(24 * time.Hour)
+
+	schedules, err := s.scheduleRepo.GetAll(ctx, userID, true, startOfDay.Format(time.RFC3339), endOfDay.Format(time.RFC3339))
 	if err != nil {
 		return nil, err
 	}
@@ -42,11 +51,12 @@ func (s *service) GetTodaySchedules(ctx context.Context, userID int64) (*models.
 		statResponse      models.StatsResponse
 	)
 	for i, sch := range schedules {
-		if sch.Status == models.StatusScheduled {
+		switch sch.Status {
+		case models.StatusScheduled:
 			statResponse.Upcoming++
-		} else if sch.Status == models.StatusCompleted {
+		case models.StatusCompleted:
 			statResponse.Completed++
-		} else if sch.Status == models.StatusCancelled {
+		case models.StatusCancelled:
 			statResponse.Missed++
 		}
 
@@ -60,7 +70,7 @@ func (s *service) GetTodaySchedules(ctx context.Context, userID int64) (*models.
 }
 
 func (s *service) GetAllSchedules(ctx context.Context, userID int64) (*models.ListScheduleResponse, error) {
-	schedules, err := s.scheduleRepo.GetAll(ctx, userID, false)
+	schedules, err := s.scheduleRepo.GetAll(ctx, userID, false, "", "")
 	if err != nil {
 		return nil, err
 	}
@@ -231,7 +241,7 @@ func (s *service) validateLocationCompliance(cfg config.ServiceConfig, sch *mode
 	if distanceMeters > cfg.MaxDistanceError {
 		return models.ComplianceResult{
 			Flags:          models.ComplianceLocationError,
-			Notes:          fmt.Sprintf("Distance from scheduled location: %.0fm (exceeds %dm limit)", distanceMeters, cfg.MaxDistanceError),
+			Notes:          fmt.Sprintf("Distance from scheduled location: %.0fm (exceeds %.0fm limit)", distanceMeters, cfg.MaxDistanceError),
 			WarningMessage: fmt.Sprintf("You are %.0fm away from the scheduled location", distanceMeters),
 		}
 	}

@@ -44,3 +44,7 @@ export const getRelativeTime = (dateString: string): string => {
     return dateString;
   }
 }; 
+
+export const getCurrentTimezone = (): string => {
+  return Intl.DateTimeFormat().resolvedOptions().timeZone;
+}; 

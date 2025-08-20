@@ -9,8 +9,9 @@ import {
 
 export const scheduleService = {
   // Get today's schedules
-  getTodaySchedules: async (): Promise<ListScheduleResponse> => {
-    const response = await api.get<APIResponse<ListScheduleResponse>>('/api/v1/schedules/today');
+  getTodaySchedules: async (timezone?: string): Promise<ListScheduleResponse> => {
+    const params = timezone ? { tz: timezone } : {};
+    const response = await api.get<APIResponse<ListScheduleResponse>>('/api/v1/schedules/today', { params });
     return response.data.data || { schedules: [], stats: {missed: 0, upcoming: 0, completed: 0}};
   },
 

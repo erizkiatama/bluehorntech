@@ -2,11 +2,12 @@ package schedule
 
 import (
 	"errors"
-	"github.com/erizkiatama/bluehorntech/internal/models"
 	"log"
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/erizkiatama/bluehorntech/internal/models"
 
 	"github.com/erizkiatama/bluehorntech/internal/service/schedule"
 	"github.com/erizkiatama/bluehorntech/pkg/response"
@@ -29,7 +30,12 @@ func New(svc schedule.Service) *Handler {
 func (h *Handler) GetTodaySchedules(c *gin.Context) {
 	log.Printf("Getting today's schedules for user %d", defaultUserID)
 
-	resp, err := h.svc.GetTodaySchedules(c.Request.Context(), defaultUserID)
+	tz := c.Query("tz")
+	if tz == "" {
+		tz = "UTC"
+	}
+
+	resp, err := h.svc.GetTodaySchedules(c.Request.Context(), defaultUserID, tz)
 	if err != nil {
 		response.InternalError(c, "Failed to fetch today's schedules", err)
 		return

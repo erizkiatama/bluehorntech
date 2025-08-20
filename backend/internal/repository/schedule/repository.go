@@ -3,13 +3,14 @@ package schedule
 import (
 	"context"
 	"fmt"
+	"time"
+
 	"github.com/erizkiatama/bluehorntech/internal/models"
 	"github.com/jmoiron/sqlx"
-	"time"
 )
 
 type Repository interface {
-	GetAll(ctx context.Context, userID int64, isToday bool) ([]models.Schedule, error)
+	GetAll(ctx context.Context, userID int64, isToday bool, start, end string) ([]models.Schedule, error)
 	GetByID(ctx context.Context, scheduleID, userID int64) (*models.Schedule, error)
 	UpdateClockIn(ctx context.Context, req models.Schedule) error
 	UpdateClockOut(ctx context.Context, req models.Schedule) error
@@ -24,14 +25,16 @@ func New(db *sqlx.DB) Repository {
 }
 
 // GetAll TODO: Implement proper query options for where clause and proper pagination using LIMIT & OFFSET
-func (r *repository) GetAll(ctx context.Context, userID int64, isToday bool) ([]models.Schedule, error) {
+func (r *repository) GetAll(ctx context.Context, userID int64, isToday bool, start, end string) ([]models.Schedule, error) {
 	query := `
 		SELECT id, user_id, client_name, service_name, service_notes, location, start_time, end_time,
 			latitude, longitude, status, clock_in_time, clock_out_time, clock_in_latitude, clock_out_latitude,
 			clock_in_longitude, clock_out_longitude FROM schedules WHERE user_id = ?`
+	args := []any{userID}
 
 	if isToday {
-		query += " AND DATE(start_time) = CURRENT_DATE"
+		query += " AND start_time >= ? AND start_time < ?"
+		args = append(args, start, end)
 	}
 	query += " ORDER BY start_time ASC"
 
@@ -44,7 +47,7 @@ func (r *repository) GetAll(ctx context.Context, userID int64, isToday bool) ([]
 		_ = stmt.Close()
 	}()
 
-	err = stmt.SelectContext(ctx, &schedules, userID)
+	err = stmt.SelectContext(ctx, &schedules, args...)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get schedules: %w", err)
 	}
